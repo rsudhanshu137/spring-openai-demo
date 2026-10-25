@@ -1,0 +1,72 @@
+spring:
+  config:
+    import: "optional:file:.env[.properties]"
+  application:
+    name: spring-openai-demo
+  main:
+    web-application-type: NONE
+    banner-mode: OFF
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+    mcp:
+      server:
+        enabled: true
+        name: ai-support-mcp
+        type: SYNC
+        stdio: true
+#      chat:
+#        options:
+#          model: gpt-5
+#          temperature: 1.0
+    ollama:
+      base-url: http://localhost:11434/
+      chat:
+        model: llama3.2:1b
+#    chat:
+#      client:
+#        enabled: false
+
+    vectorstore:
+      qdrant:
+        initialize-schema: true
+        host: localhost
+        port: 6334
+        collection-name: javatechie
+
+
+  docker:
+    compose:
+      stop:
+        command: DOWN
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/customersupportdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: appuser
+    password: apppassword
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  sql:
+    init:
+      mode: always
+
+
+weather:
+  api:
+    key: ${WEATHER_API_KEY}
+
+server:
+  port: 9292
+
+logging:
+  level:
+    root: error
