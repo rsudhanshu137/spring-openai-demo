@@ -39,7 +39,17 @@ Most "Spring AI + OpenAI" demos stop at a single `/chat` endpoint. This project 
                 └──────────────────────────┘
 ```
 
-The app runs with `web-application-type: NONE` — it's a non-web process that speaks MCP over **stdio**, meant to be launched by an MCP-aware client rather than hit with `curl`. (REST controllers for OpenAI chat, multi-model chat, and RAG are included in the codebase — commented out — as a reference for how the same logic can be exposed over HTTP instead.)
+The app runs with `web-application-type: NONE` — it's a non-web process that speaks MCP over **stdio**, meant to be launched by an MCP-aware client rather than hit with `curl`.
+
+The `service/` package contains three independent chat-service implementations built while exploring different ways to talk to the LLM, each with a matching (currently commented-out) REST controller for reference:
+
+| Service | Demonstrates | Status |
+|---|---|---|
+| `OpenAIChatService` | Plain OpenAI chat, plus tool-calling chat where the model is handed `RealTimeDataTool` + `ITSupoortTicketTool` directly via `ChatClient.tools(...)` | Reference (commented out) |
+| `MultiModelChatService` | Routing the same prompt to either an OpenAI or an Ollama-backed `ChatClient` | Reference (commented out) |
+| `SupportTicketService` | Real ticket business logic — creation, escalation, comments, priority/category detection, SLA calculation | **Active** — backs `ITSupoortTicketTool`, exposed live over MCP |
+
+In other words: the REST-controller + direct `ChatClient.tools(...)` approach and the MCP-server + `@Tool`-annotated-class approach are two independent ways of exposing the *same* underlying capabilities (chat, weather/timezone lookups, ticket management) — the MCP path is the one currently wired up and running, while the controller/service path is kept in the codebase as a side-by-side reference for the pre-MCP approach.
 
 ## Tech Stack
 
